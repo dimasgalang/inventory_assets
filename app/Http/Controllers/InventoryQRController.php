@@ -78,10 +78,13 @@ class InventoryQRController extends Controller
 
             // Create image (base64) from some text
             $string = $inventoryqr->assets_number;
-            $width  = 150;
-            $height = 150;
-            $font   = 3;
-            $im = @imagecreate($width, $height);
+            $width  = 200;
+            $height = 200;
+            $font   = 6;
+            $im = @imagecreate(
+                $width,
+                $height
+            );
             $text_color = imagecolorallocate($im, 0, 0, 0); //black text
             // white background
             // $background_color = imagecolorallocate ($im, 255, 255, 255);
@@ -89,11 +92,12 @@ class InventoryQRController extends Controller
             $transparent = imagecolorallocatealpha($im, 0, 0, 0, 127);
             imagefill($im, 0, 0, $transparent);
             imagesavealpha($im, true);
-            imagestring($im, $font, 55, 10, $string, $text_color);
+            imagestring($im, $font, 75, 10, $string, $text_color);
             ob_start();
             imagepng($im);
             $imstr = base64_encode(ob_get_clean());
             imagedestroy($im);
+
 
             // Save Image in folder from string base64
             $img = 'data:image/png;base64,' . $imstr;
