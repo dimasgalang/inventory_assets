@@ -49,7 +49,7 @@
             </div>
         </div>
     </li>
-
+    @endif
     
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseControlCard"
@@ -59,12 +59,13 @@
         </a>
         <div id="collapseControlCard" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="{{ route('controlcard.index') }}">Daftar Control Card</a>
+                @if($roleusers[0]->rolename == 'Admin')
+                    <a class="collapse-item" href="{{ route('controlcard.index') }}">Daftar Control Card</a> 
+                @endif
                 <a class="collapse-item" href="{{ route('controlcard.scan') }}">Scan Assets</a>
             </div>
         </div>
     </li>
-    @endif
 
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInventory"
