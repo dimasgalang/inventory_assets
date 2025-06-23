@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ControlCardController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InventoryQRController;
@@ -84,6 +85,15 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/machineqr/batchqr', [MachineQRController::class, 'batchqr'])->name('machineqr.batchqr');
     Route::get('/machineqr/generateqr/{id}', [MachineQRController::class, 'generateqr'])->name('machineqr.generateqr');
     Route::post('/machineqr/import', [MachineQRController::class, 'import'])->name('machineqr.import');
+
+    //Control Card
+    Route::get('/controlcard/index', [ControlCardController::class, 'index'])->name('controlcard.index');
+    Route::get('/controlcard/create', [ControlCardController::class, 'create'])->name('controlcard.create');
+    Route::post('/controlcard/store', [ControlCardController::class, 'store'])->name('controlcard.store');
+    Route::get('/controlcard/void', [ControlCardController::class, 'void'])->name('controlcard.void');
+    Route::get('/controlcard/restore', [ControlCardController::class, 'restore'])->name('controlcard.restore');
+    Route::post('/controlcard/import', [ControlCardController::class, 'import'])->name('controlcard.import');
+    Route::get('/controlcard/scan', [ControlCardController::class, 'scan'])->name('controlcard.scan');
 
     //SmartIT
     Route::get('/smartit/fetchitem', [SmartITController::class, 'fetchitem'])->name('smartit.fetchitem');

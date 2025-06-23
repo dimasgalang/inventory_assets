@@ -49,6 +49,21 @@
             </div>
         </div>
     </li>
+
+    
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseControlCard"
+            aria-expanded="true" aria-controls="collapseControlCard">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Control Card</span>
+        </a>
+        <div id="collapseControlCard" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('controlcard.index') }}">Daftar Control Card</a>
+                <a class="collapse-item" href="{{ route('controlcard.scan') }}">Scan Assets</a>
+            </div>
+        </div>
+    </li>
     @endif
 
     <li class="nav-item">
