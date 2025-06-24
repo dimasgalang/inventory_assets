@@ -16,7 +16,6 @@ class InventoryQRController extends Controller
 {
     public function index(Request $request)
     {
-
         if ($request->void) {
             $inventoryqrs = InventoryQR::select('*')->where('void', '=', $request->void)->get();
         } else {
@@ -149,12 +148,19 @@ class InventoryQRController extends Controller
         }
     }
 
-    public function generatePDF()
+    public function generatePDF(Request $request)
     {
-        $data = ['title' => 'All QR Code Sticker'];
-        $qrcodes = InventoryQR::all();
+        $document = "";
+        if ($request->exporttype == "all") {
+            $qrcodes = InventoryQR::all();
+            $document = "All Assets QR Codes Sticker.pdf";
+        } else {
+            $qrcodes = InventoryQR::whereBetween('assets_number', [$request->from_assets_number, $request->to_assets_number])->get();
+            $document = "Assets QR Codes Sticker (" . $request->from_assets_number . " - " . $request->to_assets_number . ").pdf";
+        }
+        $data = ['title' => $document];
         $pdf = Pdf::loadView('/pdf/qrstickerA4', compact('data', 'qrcodes'));
         // return view('pdf.qrstickerA4', compact('data', 'qrcodes'));
-        return $pdf->download('QR Code Sticker.pdf');
+        return $pdf->download($document);
     }
 }

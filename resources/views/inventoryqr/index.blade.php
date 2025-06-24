@@ -26,8 +26,10 @@
                             class="fas fa-upload fa-sm text-white-50"></i> Upload Data</a>
                         <!-- <a href="{{ route('inventoryqr.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                             class="fas fa-plus fa-sm text-white-50"></i> Create Inventory</a> -->
-                        <a href="{{ route('pdf.generatePDF') }}" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                            class="fas fa-download fa-sm text-white-50"></i> Download Sticker A4</a>
+                        <!-- <a href="{{ route('pdf.generatePDF') }}" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
+                            class="fas fa-download fa-sm text-white-50"></i> Download Sticker</a> -->
+                        <a href="" data-toggle="modal" data-target="#stickerModal" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
+                            class="fas fa-download fa-sm text-white-50"></i> Download Sticker</a>
                         </form>
                     </div>
                 </div>
@@ -102,6 +104,59 @@
         <!-- End of Main Content -->
 
         <!-- Modal -->
+
+
+        <div class="modal fade" id="stickerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md" role="inventoryqr" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="sticker-title" class="modal-title" id="exampleModalLabel">Export Sticker</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">x</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="GET" action="{{ route('pdf.generatePDF') }}">
+                            @csrf
+                            <div>
+                                <label>Export Type :</label>
+                                <select class="form-control exporttype" id="exporttype" name="exporttype">
+                                    <!-- <option></option> -->
+                                    <option value="range">Range Assets Number</option>
+                                    <option value="all">All Assets Number</option>
+                                </select>
+                            </div>
+                            <br>
+                            <div>
+                                <label>From :</label>
+                                <select class="form-control from_assets_number" id="from_assets_number" name="from_assets_number" required>
+                                    <option></option>
+                                    @foreach ($inventoryqrs as $inventoryqr )
+                                        <option value="{{ $inventoryqr->assets_number }}">{{ $inventoryqr->assets_number }} - {{ $inventoryqr->item_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <br>
+                            <div>
+                                <label>To :</label>
+                                <select class="form-control to_assets_number" id="to_assets_number" name="to_assets_number" required>
+                                    <option></option>
+                                    @foreach ($inventoryqrs as $inventoryqr )
+                                        <option value="{{ $inventoryqr->assets_number }}">{{ $inventoryqr->assets_number }} - {{ $inventoryqr->item_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <br>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
+                        <button class="btn btn-success" type="submit">Export</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl" role="inventoryqr" >
                 <div class="modal-content">
@@ -235,6 +290,35 @@
                 Swal.showLoading();
             },
         })
+    });
+    $('.from_assets_number').select2({
+          allowClear: true,
+          placeholder: 'Choose Assets Number',
+    });
+    $('.to_assets_number').select2({
+          allowClear: true,
+          placeholder: 'Choose Assets Number',
+    });
+    $('.exporttype').select2({
+          allowClear: true,
+          placeholder: 'Choose Export Type',
+    });
+    $(document).on("change", "#exporttype", function(e){
+        e.preventDefault();
+        var type = $(this).val();
+        if (type == "range") {
+            $('#from_assets_number').removeAttr('disabled');
+            $('#to_assets_number').removeAttr('disabled');
+            $('#from_assets_number').required = true;
+            $('#to_assets_number').required = true;
+        } else{
+            $('#from_assets_number').val('').trigger('change');
+            $('#to_assets_number').val('').trigger('change');
+            $('#from_assets_number').attr('disabled','disabled');
+            $('#to_assets_number').attr('disabled','disabled');
+            $('#from_assets_number').required = false;
+            $('#to_assets_number').required = false;
+        }
     });
 </script>
 </html>
