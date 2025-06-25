@@ -148,6 +148,66 @@ class InventoryQRController extends Controller
         }
     }
 
+    public function generateqr($id)
+    {
+        $inventoryqr = InventoryQR::findOrFail($id);
+        $qr_data = $inventoryqr->item_number . "_" . $inventoryqr->assets_number . "_" . $inventoryqr->brand . "_" . $inventoryqr->type . "_" . $inventoryqr->serial_number . "_" . $inventoryqr->incoming_date;
+
+        $fileImageName = $qr_data . '.jpg';
+
+        // Create image (base64) from some text
+        $string = $inventoryqr->assets_number;
+        $width  = 200;
+        $height = 200;
+        $font   = 6;
+        $im = @imagecreate(
+            $width,
+            $height
+        );
+        $text_color = imagecolorallocate($im, 0, 0, 0); //black text
+        // white background
+        // $background_color = imagecolorallocate ($im, 255, 255, 255);
+        // transparent background
+        $transparent = imagecolorallocatealpha($im, 0, 0, 0, 127);
+        imagefill($im, 0, 0, $transparent);
+        imagesavealpha($im, true);
+        imagestring($im, $font, 75, 10, $string, $text_color);
+        ob_start();
+        imagepng($im);
+        $imstr = base64_encode(ob_get_clean());
+        imagedestroy($im);
+
+
+        // Save Image in folder from string base64
+        $img = 'data:image/png;base64,' . $imstr;
+        $image_parts = explode(";base64,", $img);
+        $image_type_aux = explode("image/", $image_parts[0]);
+        $image_type = $image_type_aux[1];
+        $image_base64 = base64_decode($image_parts[1]);
+        $file = 'public/inventoryqr/text/' . $qr_data . '.jpg';
+        // Move to folder
+        // file_put_contents($file, $image_base64);
+        Storage::put('public/inventoryqr/text/' . $fileImageName, $image_base64);
+
+        $qr = FacadesQrCode::format('png')->margin(12)->merge(storage_path('app/public/inventoryqr/text/') . $qr_data . '.jpg', 1, true)->size(200)->generate($qr_data);
+
+        // $qr = FacadesQrCode::format('png')->generate($qr_data);
+        // $qrImageName = $qr_data . '.png';
+
+        Storage::put('public/inventoryqr/' . $fileImageName, $qr);
+
+        $updateinventoryqr = InventoryQR::findOrFail($inventoryqr->id);
+
+        $updateinventoryqr->fill([
+            'qr_code' => $fileImageName,
+        ]);
+
+        $updateinventoryqr->save();
+
+        Alert::success('Generate QR Successfully!', 'QR Code successfully generated!');
+        return redirect('/inventoryqr/index');
+    }
+
     public function generatePDF(Request $request)
     {
         $document = "";

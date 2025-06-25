@@ -17,27 +17,19 @@
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Inventory QR List</h1>
+                    <h1 class="h3 mb-0 text-gray-800">IT Control List</h1>
                     <div>
-                        <form method="GET" action="{{ route('inventoryqr.batchqr') }}" >
-                            <button id="submit" type="submit" class="btn btn-sm btn-primary shadow-s"><i
-                            class="fas fa-qrcode fa-sm text-white-50"></i> Generate QR</a></button>
                         <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#importModal"><i
                             class="fas fa-upload fa-sm text-white-50"></i> Upload Data</a>
-                        <!-- <a href="{{ route('inventoryqr.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                            class="fas fa-plus fa-sm text-white-50"></i> Create Inventory</a> -->
-                        <!-- <a href="{{ route('pdf.generatePDF') }}" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                            class="fas fa-download fa-sm text-white-50"></i> Download Sticker</a> -->
-                        <a href="" data-toggle="modal" data-target="#stickerModal" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                            class="fas fa-download fa-sm text-white-50"></i> Download Sticker</a>
-                        </form>
+                        <a href="{{ route('itcontrol.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                            class="fas fa-plus fa-sm text-white-50"></i> Create IT Control</a>
                     </div>
                 </div>
                 
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 d-sm-flex align-items-center justify-content-between mb-4">
-                        <h6 class="m-0 font-weight-bold text-primary">Inventory QR Data</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">IT Control Data</h6>
                         <form method="GET" id="form-void">
                                 <select name="void" id="void" class="form-control" onchange="document.getElementById('form-void').submit()" style="width: 300px;">
                                     <option disabled selected hidden>Select Status</option>
@@ -52,41 +44,38 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Item Number</th>
+                                        <th>Users</th>
                                         <th>Assets Number</th>
-                                        <th>Category</th>
-                                        <th>Brand</th>
-                                        <th>Type</th>
                                         <th>Item Name</th>
-                                        <th>Incoming Date</th>
-                                        <th>Location</th>
-                                        <th>QR Code</th>
+                                        <th>Device name</th>
+                                        <th>Windows License</th>
+                                        <th>Windows Password</th>
+                                        <th>Office License</th>
+                                        <th>Office Email</th>
+                                        <th>Office Password</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($inventoryqrs as $inventoryqr)
+                                    @foreach($itcontrols as $itcontrol)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $inventoryqr->item_number }}</td>
-                                        <td>{{ $inventoryqr->assets_number }}</td>
-                                        <td>{{ $inventoryqr->category }}</td>
-                                        <td>{{ $inventoryqr->brand }}</td>
-                                        <td>{{ $inventoryqr->type }}</td>
-                                        <td>{{ $inventoryqr->item_name }}</td>
-                                        <td>{{ $inventoryqr->incoming_date }}</td>
-                                        <td>{{ $inventoryqr->location }}</td>
-                                        <td class="text-center"><img id="qr" src="{{url('/storage/inventoryqr/'. $inventoryqr->qr_code)}}" style="width: 150;"></td>
+                                        <td>{{ $itcontrol->name }}</td>
+                                        <td>{{ $itcontrol->assets_number }}</td>
+                                        <td>{{ $itcontrol->item_name }}</td>
+                                        <td>{{ $itcontrol->device_name }}</td>
+                                        <td>{{ $itcontrol->windows_license }}</td>
+                                        <td>{{ $itcontrol->windows_password }}</td>
+                                        <td>{{ $itcontrol->office_license }}</td>
+                                        <td>{{ $itcontrol->office_email }}</td>
+                                        <td>{{ $itcontrol->office_password }}</td>
                                         <td class="text-center">
                                             @if (request()->get('void') == 'false' || request()->get('void') == '')
-                                            <a href ="{{ route('inventoryqr.generateqr', ['id' => $inventoryqr->id]) }}" class="btn btn-primary btn-circle btn-sm">
-                                                <i class="fas fa-qrcode"></i>
-                                            </a>
-                                            <a class="btn btn-danger btn-circle btn-sm btn-void-record" data-void-link="{{ route('inventoryqr.void', ['id' => $inventoryqr->id]) }}" data-void-name="{{ $inventoryqr->item_name }}" data-toggle="modal" data-target="#voidModal">
+                                            <a class="btn btn-danger btn-circle btn-sm btn-void-record" data-void-link="{{ route('itcontrol.void', ['id' => $itcontrol->id]) }}" data-void-name="{{ $itcontrol->item_name }}" data-toggle="modal" data-target="#voidModal">
                                                 <i class="fas fa-ban"></i>
                                             </a>
                                             @elseif (request()->get('void') == 'true')
-                                            <a class="btn btn-success btn-circle btn-sm btn-restore-record" data-restore-link="{{ route('inventoryqr.restore', ['id' => $inventoryqr->id]) }}" data-restore-name="{{ $inventoryqr->item_name }}" data-toggle="modal" data-target="#restoreModal">
+                                            <a class="btn btn-success btn-circle btn-sm btn-restore-record" data-restore-link="{{ route('itcontrol.restore', ['id' => $itcontrol->id]) }}" data-restore-name="{{ $itcontrol->item_name }}" data-toggle="modal" data-target="#restoreModal">
                                                 <i class="fas fa-history"></i>
                                             </a>
                                             @endif
@@ -107,64 +96,11 @@
         <!-- End of Main Content -->
 
         <!-- Modal -->
-
-
-        <div class="modal fade" id="stickerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-md" role="inventoryqr" >
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 id="sticker-title" class="modal-title" id="exampleModalLabel">Export Sticker</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">x</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="GET" action="{{ route('pdf.generatePDF') }}">
-                            @csrf
-                            <div>
-                                <label>Export Type :</label>
-                                <select class="form-control exporttype" id="exporttype" name="exporttype">
-                                    <!-- <option></option> -->
-                                    <option value="range">Range Assets Number</option>
-                                    <option value="all">All Assets Number</option>
-                                </select>
-                            </div>
-                            <br>
-                            <div>
-                                <label>From :</label>
-                                <select class="form-control" id="from_assets_number" name="from_assets_number" required>
-                                    <option></option>
-                                    @foreach ($inventoryqrs as $inventoryqr )
-                                        <option value="{{ $inventoryqr->assets_number }}">{{ $inventoryqr->assets_number }} - {{ $inventoryqr->item_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <br>
-                            <div>
-                                <label>To :</label>
-                                <select class="form-control" id="to_assets_number" name="to_assets_number" required>
-                                    <option></option>
-                                    @foreach ($inventoryqrs as $inventoryqr )
-                                        <option value="{{ $inventoryqr->assets_number }}">{{ $inventoryqr->assets_number }} - {{ $inventoryqr->item_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <br>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
-                        <button class="btn btn-success" type="submit">Export</button>
-                    </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
         <div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl" role="inventoryqr" >
+            <div class="modal-dialog modal-xl" role="itcontrol" >
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 id="pdf-title" class="modal-title" id="exampleModalLabel">Inventory QR Name</h5>
+                        <h5 id="pdf-title" class="modal-title" id="exampleModalLabel">IT Control Name</h5>
                         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
@@ -177,7 +113,7 @@
             </div>
         </div>
         <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-md" role="inventoryqr" >
+            <div class="modal-dialog modal-md" role="itcontrol" >
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 id="delete-title" class="modal-title" id="exampleModalLabel">Delete Record</h5>
@@ -195,7 +131,7 @@
         </div>
 
         <div class="modal fade" id="voidModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-md" role="inventoryqr" >
+            <div class="modal-dialog modal-md" role="itcontrol" >
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 id="void-title" class="modal-title" id="exampleModalLabel">Void Record</h5>
@@ -213,7 +149,7 @@
         </div>
 
         <div class="modal fade" id="restoreModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-md" role="inventoryqr" >
+            <div class="modal-dialog modal-md" role="itcontrol" >
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 id="restore-title" class="modal-title" id="exampleModalLabel">Restore Record</h5>
@@ -234,12 +170,12 @@
             <div class="modal-dialog modal-md" role="document" >
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 id="modal-title" class="modal-title" id="exampleModalLabel">Import Inventory Assets</h5>
+                        <h5 id="modal-title" class="modal-title" id="exampleModalLabel">Import IT Control</h5>
                         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">x</span>
                         </button>
                     </div>
-                    <form action="{{ route('inventoryqr.import') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('itcontrol.import') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                             <div class="modal-body">
                                 <div class="form-group">
@@ -268,20 +204,20 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript">
     $('.btn-show-pdf').on('click', function () {
-        $('#pdf-src').attr('src', '../../storage/inventoryqr/' + $(this).data('show-link'));
+        $('#pdf-src').attr('src', '../../storage/itcontrol/' + $(this).data('show-link'));
         $("#pdf-title").text($(this).data('show-title'));
     });
     $('.btn-delete-record').on('click', function () {
             $('#btn-confirm').attr('href', $(this).data('delete-link'));
-            $("#modal-text-record").text('Apakah anda yakin ingin menghapus Inventory QR ' + $(this).data('delete-name') + '?');
+            $("#modal-text-record").text('Apakah anda yakin ingin menghapus IT Control ' + $(this).data('delete-name') + '?');
     });
     $('.btn-void-record').on('click', function () {
             $('#btn-confirm-void').attr('href', $(this).data('void-link'));
-            $("#modal-text-record-void").text('Apakah anda yakin ingin menghapus Inventory QR ' + $(this).data('void-name') + '?');
+            $("#modal-text-record-void").text('Apakah anda yakin ingin menghapus IT Control ' + $(this).data('void-name') + '?');
     });
     $('.btn-restore-record').on('click', function () {
             $('#btn-confirm-restore').attr('href', $(this).data('restore-link'));
-            $("#modal-text-record-restore").text('Apakah anda yakin ingin mengembalikan Inventory QR ' + $(this).data('restore-name') + '?');
+            $("#modal-text-record-restore").text('Apakah anda yakin ingin mengembalikan IT Control ' + $(this).data('restore-name') + '?');
     });
     $("#submit").click(function() {
         $(this).hide();
@@ -293,37 +229,6 @@
                 Swal.showLoading();
             },
         })
-    });
-    $('#from_assets_number').select2({
-          allowClear: true,
-          placeholder: 'Choose Assets Number',
-          dropdownParent: $("#stickerModal")
-    });
-    $('#to_assets_number').select2({
-          allowClear: true,
-          placeholder: 'Choose Assets Number',
-          dropdownParent: $("#stickerModal")
-    });
-    $('.exporttype').select2({
-          allowClear: true,
-          placeholder: 'Choose Export Type',
-    });
-    $(document).on("change", "#exporttype", function(e){
-        e.preventDefault();
-        var type = $(this).val();
-        if (type == "range") {
-            $('#from_assets_number').removeAttr('disabled');
-            $('#to_assets_number').removeAttr('disabled');
-            $('#from_assets_number').required = true;
-            $('#to_assets_number').required = true;
-        } else{
-            $('#from_assets_number').val('').trigger('change');
-            $('#to_assets_number').val('').trigger('change');
-            $('#from_assets_number').attr('disabled','disabled');
-            $('#to_assets_number').attr('disabled','disabled');
-            $('#from_assets_number').required = false;
-            $('#to_assets_number').required = false;
-        }
     });
 </script>
 </html>

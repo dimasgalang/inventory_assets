@@ -49,6 +49,19 @@
             </div>
         </div>
     </li>
+    
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseITControl"
+            aria-expanded="true" aria-controls="collapseITControl">
+            <i class="fas fa-fw fa-file"></i>
+            <span>IT Control</span>
+        </a>
+        <div id="collapseITControl" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('itcontrol.index') }}">Daftar Komputer</a>
+            </div>
+        </div>
+    </li>
     @endif
     
     <li class="nav-item">

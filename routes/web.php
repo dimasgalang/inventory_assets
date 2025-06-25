@@ -4,6 +4,7 @@ use App\Http\Controllers\ControlCardController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InventoryQRController;
+use App\Http\Controllers\ITControlController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MachineQRController;
 use App\Http\Controllers\RegisterController;
@@ -72,6 +73,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/inventoryqr/void', [InventoryQRController::class, 'void'])->name('inventoryqr.void');
     Route::get('/inventoryqr/restore', [InventoryQRController::class, 'restore'])->name('inventoryqr.restore');
     Route::get('/inventoryqr/batchqr', [InventoryQRController::class, 'batchqr'])->name('inventoryqr.batchqr');
+    Route::get('/inventoryqr/generateqr/{id}', [InventoryQRController::class, 'generateqr'])->name('inventoryqr.generateqr');
     Route::post('/inventoryqr/import', [InventoryQRController::class, 'import'])->name('inventoryqr.import');
 
     //Machine QR
@@ -94,6 +96,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/controlcard/restore', [ControlCardController::class, 'restore'])->name('controlcard.restore');
     Route::post('/controlcard/import', [ControlCardController::class, 'import'])->name('controlcard.import');
     Route::get('/controlcard/scan', [ControlCardController::class, 'scan'])->name('controlcard.scan');
+
+    //IT Control
+    Route::get('/itcontrol/index', [ITControlController::class, 'index'])->name('itcontrol.index');
+    Route::get('/itcontrol/create', [ITControlController::class, 'create'])->name('itcontrol.create');
+    Route::post('/itcontrol/store', [ITControlController::class, 'store'])->name('itcontrol.store');
+    Route::get('/itcontrol/void', [ITControlController::class, 'void'])->name('itcontrol.void');
+    Route::get('/itcontrol/restore', [ITControlController::class, 'restore'])->name('itcontrol.restore');
+    Route::post('/itcontrol/import', [ITControlController::class, 'import'])->name('itcontrol.import');
 
     //SmartIT
     Route::get('/smartit/fetchitem', [SmartITController::class, 'fetchitem'])->name('smartit.fetchitem');
