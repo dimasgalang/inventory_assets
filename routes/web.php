@@ -5,6 +5,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InventoryQRController;
 use App\Http\Controllers\ITControlController;
+use App\Http\Controllers\ITMaintenanceController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MachineQRController;
 use App\Http\Controllers\RegisterController;
@@ -104,6 +105,15 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/itcontrol/void', [ITControlController::class, 'void'])->name('itcontrol.void');
     Route::get('/itcontrol/restore', [ITControlController::class, 'restore'])->name('itcontrol.restore');
     Route::post('/itcontrol/import', [ITControlController::class, 'import'])->name('itcontrol.import');
+
+    //IT Maintenance
+    Route::get('/itmaintenance/index', [ITMaintenanceController::class, 'index'])->name('itmaintenance.index');
+    Route::get('/itmaintenance/create', [ITMaintenanceController::class, 'create'])->name('itmaintenance.create');
+    Route::post('/itmaintenance/store', [ITMaintenanceController::class, 'store'])->name('itmaintenance.store');
+    Route::get('/itmaintenance/void', [ITMaintenanceController::class, 'void'])->name('itmaintenance.void');
+    Route::get('/itmaintenance/restore', [ITMaintenanceController::class, 'restore'])->name('itmaintenance.restore');
+    Route::post('/itmaintenance/import', [ITMaintenanceController::class, 'import'])->name('itmaintenance.import');
+    Route::get('/itmaintenance/fetchassetscomputer', [ITMaintenanceController::class, 'fetchassetscomputer'])->name('itmaintenance.fetchassetscomputer');
 
     //SmartIT
     Route::get('/smartit/fetchitem', [SmartITController::class, 'fetchitem'])->name('smartit.fetchitem');

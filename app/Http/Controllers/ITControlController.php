@@ -14,9 +14,9 @@ class ITControlController extends Controller
     public function index(Request $request)
     {
         if ($request->void) {
-            $itcontrols = ITControl::select('*')->where('void', '=', $request->void)->get();
+            $itcontrols = ITControl::select('itcontrol.*', 'users.name', 'inventoryqr.item_name')->leftJoin('inventoryqr', 'itcontrol.assets_number', '=', 'inventoryqr.assets_number')->leftJoin('users', 'itcontrol.user_id', '=', 'users.id')->where('itcontrol.void', '=', $request->void)->get();
         } else {
-            $itcontrols = ITControl::select('itcontrol.*','users.name','inventoryqr.item_name')->leftJoin('inventoryqr', 'itcontrol.assets_number', '=', 'inventoryqr.assets_number')->leftJoin('users', 'itcontrol.user_id', '=', 'users.id')->where('itcontrol.void', '=', 'false')->get();
+            $itcontrols = ITControl::select('itcontrol.*', 'users.name', 'inventoryqr.item_name')->leftJoin('inventoryqr', 'itcontrol.assets_number', '=', 'inventoryqr.assets_number')->leftJoin('users', 'itcontrol.user_id', '=', 'users.id')->where('itcontrol.void', '=', 'false')->get();
         }
         return view('itcontrol.index', compact('itcontrols'));
     }
@@ -41,7 +41,7 @@ class ITControlController extends Controller
             'void' => 'false'
         ]);
 
-        Alert::success('Create Successfully!', 'Inventory QR ' . $request->item_number . ' successfully created!');
+        Alert::success('Create Successfully!', 'IT Control ' . $request->assets_number . ' successfully created!');
         return redirect()
             ->route('itcontrol.create');
     }
@@ -54,7 +54,7 @@ class ITControlController extends Controller
         ]);
         $itcontrols->save();
 
-        Alert::success('Void Successfully!', 'Inventory QR "' . $itcontrols->item_name . '" successfully voided!');
+        Alert::success('Void Successfully!', 'IT Control "' . $itcontrols->assets_number . '" successfully voided!');
         return redirect('itcontrol/index');
     }
 
@@ -66,7 +66,7 @@ class ITControlController extends Controller
         ]);
         $itcontrols->save();
 
-        Alert::success('Restore Successfully!', 'Inventory QR "' . $itcontrols->item_name . '" successfully restored!');
+        Alert::success('Restore Successfully!', 'IT Control "' . $itcontrols->assets_number . '" successfully restored!');
         return redirect('itcontrol/index');
     }
 

@@ -62,6 +62,19 @@
             </div>
         </div>
     </li>
+    
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseITMaintenance"
+            aria-expanded="true" aria-controls="collapseITMaintenance">
+            <i class="fas fa-fw fa-file"></i>
+            <span>IT Maintenance</span>
+        </a>
+        <div id="collapseITMaintenance" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('itmaintenance.index') }}">Daftar Komputer</a>
+            </div>
+        </div>
+    </li>
     @endif
     
     <li class="nav-item">
