@@ -25,12 +25,14 @@ class ITMaintenanceController extends Controller
     public function fetchassetscomputer()
     {
         $assets = InventoryQR::select('*')->where('type', 'like', '%KOMPUTER%')->get();
-        ITMaintenance::updateOrCreate([
-            'month' => Carbon::now()->format('m'),
-            'year' => Carbon::now()->format('Y'),
-            'assets_number' => $assets[0]->assets_number,
-            'void' => 'false'
-        ]);
+        foreach ($assets as $asset) {
+            ITMaintenance::updateOrCreate([
+                'month' => Carbon::now()->format('m'),
+                'year' => Carbon::now()->format('Y'),
+                'assets_number' => $asset->assets_number,
+                'void' => 'false'
+            ]);
+        }
 
         Alert::success('Fetch Successfully!', 'Fetch Data Inventory successfull!');
         return redirect('itmaintenance/index');
