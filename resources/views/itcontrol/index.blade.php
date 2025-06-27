@@ -21,8 +21,8 @@
                     <div>
                         <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#importModal"><i
                             class="fas fa-upload fa-sm text-white-50"></i> Upload Data</a>
-                        <a href="{{ route('itcontrol.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                            class="fas fa-plus fa-sm text-white-50"></i> Create IT Control</a>
+                        <!-- <a href="{{ route('itcontrol.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                            class="fas fa-plus fa-sm text-white-50"></i> Create IT Control</a> -->
                     </div>
                 </div>
                 
@@ -39,7 +39,8 @@
                         </form>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
+                        @if($roleusers[0]->rolename == 'Admin')
+                            <div class="table-responsive">
                             <table class="table table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
@@ -85,6 +86,50 @@
                                 </tbody>
                             </table>
                         </div>
+                        @else
+                            <div class="table-responsive">
+                            <table class="table table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Users</th>
+                                        <th>Assets Number</th>
+                                        <th>Item Name</th>
+                                        <th>Device name</th>
+                                        <th>Windows Password</th>
+                                        <th>Office Email</th>
+                                        <th>Office Password</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($itcontrols as $itcontrol)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $itcontrol->name }}</td>
+                                        <td>{{ $itcontrol->assets_number }}</td>
+                                        <td>{{ $itcontrol->item_name }}</td>
+                                        <td>{{ $itcontrol->device_name }}</td>
+                                        <td>{{ $itcontrol->windows_password }}</td>
+                                        <td>{{ $itcontrol->office_email }}</td>
+                                        <td>{{ $itcontrol->office_password }}</td>
+                                        <td class="text-center">
+                                            @if (request()->get('void') == 'false' || request()->get('void') == '')
+                                            <a class="btn btn-danger btn-circle btn-sm btn-void-record" data-void-link="{{ route('itcontrol.void', ['id' => $itcontrol->id]) }}" data-void-name="{{ $itcontrol->item_name }}" data-toggle="modal" data-target="#voidModal">
+                                                <i class="fas fa-ban"></i>
+                                            </a>
+                                            @elseif (request()->get('void') == 'true')
+                                            <a class="btn btn-success btn-circle btn-sm btn-restore-record" data-restore-link="{{ route('itcontrol.restore', ['id' => $itcontrol->id]) }}" data-restore-name="{{ $itcontrol->item_name }}" data-toggle="modal" data-target="#restoreModal">
+                                                <i class="fas fa-history"></i>
+                                            </a>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        @endif
                     </div>
                 </div>
                 <!-- Content Row -->

@@ -36,7 +36,7 @@
     @endif
 
     
-    @if($roleusers[0]->rolename == 'Admin')
+    @if($roleusers[0]->rolename == 'Admin' || $roleusers[0]->rolename == 'IT')
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDocument"
             aria-expanded="true" aria-controls="collapseDocument">

@@ -23,8 +23,8 @@
                             class="fas fa-download fa-sm text-white-50"></i> Fetch Inventory</a>
                         <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#importModal"><i
                             class="fas fa-upload fa-sm text-white-50"></i> Upload Data</a>
-                        <a href="{{ route('itmaintenance.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                            class="fas fa-plus fa-sm text-white-50"></i> Create IT Maintenance</a>
+                        <!-- <a href="{{ route('itmaintenance.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                            class="fas fa-plus fa-sm text-white-50"></i> Create IT Maintenance</a> -->
                     </div>
                 </div>
                 
