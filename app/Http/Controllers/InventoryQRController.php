@@ -211,6 +211,8 @@ class InventoryQRController extends Controller
     public function generatePDF(Request $request)
     {
         $document = "";
+        // $qrcodes = InventoryQR::all();
+        // $document = "All Assets QR Codes Sticker.pdf";
         if ($request->exporttype == "all") {
             $qrcodes = InventoryQR::all();
             $document = "All Assets QR Codes Sticker.pdf";
