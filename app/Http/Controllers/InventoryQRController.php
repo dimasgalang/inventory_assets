@@ -71,7 +71,7 @@ class InventoryQRController extends Controller
     {
         $inventoryqrs = InventoryQR::all();
         foreach ($inventoryqrs as $inventoryqr) {
-            $qr_data = $inventoryqr->item_number . "_" . $inventoryqr->assets_number . "_" . $inventoryqr->brand . "_" . $inventoryqr->type . "_" . $inventoryqr->serial_number . "_" . $inventoryqr->incoming_date . "_" . $inventoryqr->location;
+            $qr_data = $inventoryqr->item_number . "_" . $inventoryqr->assets_number . "_" . $inventoryqr->brand . "_" . $inventoryqr->type . "_" . $inventoryqr->item_name . "_" . $inventoryqr->serial_number . "_" . $inventoryqr->incoming_date . "_" . $inventoryqr->location;
 
             $fileImageName = $qr_data . '.jpg';
 
@@ -151,7 +151,7 @@ class InventoryQRController extends Controller
     public function generateqr($id)
     {
         $inventoryqr = InventoryQR::findOrFail($id);
-        $qr_data = $inventoryqr->item_number . "_" . $inventoryqr->assets_number . "_" . $inventoryqr->brand . "_" . $inventoryqr->type . "_" . $inventoryqr->serial_number . "_" . $inventoryqr->incoming_date . "_" . $inventoryqr->location;
+        $qr_data = $inventoryqr->item_number . "_" . $inventoryqr->assets_number . "_" . $inventoryqr->brand . "_" . $inventoryqr->type . "_" . $inventoryqr->item_name . "_" . $inventoryqr->serial_number . "_" . $inventoryqr->incoming_date . "_" . $inventoryqr->location;
 
         $fileImageName = $qr_data . '.jpg';
 
