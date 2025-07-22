@@ -69,7 +69,7 @@ class InventoryQRController extends Controller
 
     public function batchqr()
     {
-        $inventoryqrs = InventoryQR::all();
+        $inventoryqrs = InventoryQR::where('qr_code', '=', null);
         foreach ($inventoryqrs as $inventoryqr) {
             $qr_data = $inventoryqr->item_number . "_" . $inventoryqr->assets_number . "_" . $inventoryqr->brand . "_" . $inventoryqr->type . "_" . $inventoryqr->item_name . "_" . $inventoryqr->serial_number . "_" . $inventoryqr->incoming_date . "_" . $inventoryqr->location;
 
