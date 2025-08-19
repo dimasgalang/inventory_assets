@@ -97,6 +97,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/controlcard/restore', [ControlCardController::class, 'restore'])->name('controlcard.restore');
     Route::post('/controlcard/import', [ControlCardController::class, 'import'])->name('controlcard.import');
     Route::get('/controlcard/scan', [ControlCardController::class, 'scan'])->name('controlcard.scan');
+    Route::get('/controlcard/fetchsupplier/{supplier_id}', [ControlCardController::class, 'fetchsupplier'])->name('controlcard.fetchsupplier');
 
     //IT Control
     Route::get('/itcontrol/index', [ITControlController::class, 'index'])->name('itcontrol.index');

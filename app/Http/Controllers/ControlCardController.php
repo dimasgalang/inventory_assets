@@ -44,6 +44,7 @@ class ControlCardController extends Controller
             'control_date' => $request->control_date,
             'control_price' => $request->control_price,
             'supplier_code' => $request->supplier_code,
+            'supplier_name' => $request->supplier_name,
             'void' => 'false'
         ]);
 
@@ -87,5 +88,12 @@ class ControlCardController extends Controller
             $controlcards = ControlCard::select('*')->where('assets_number', '=', null)->get();
         }
         return view('controlcard/scan', compact('controlcards'));
+    }
+
+    public function fetchsupplier($supplier_id)
+    {
+        $suppliers = DB::connection('smartit')->table('ms_supplier')->select('supplier_code', 'supplier_name')->where('supplier_status', '=', 'Active')->where('supplier_code', '=', $supplier_id)->get();
+
+        return response()->json($suppliers);
     }
 }

@@ -94,6 +94,7 @@
                                         <option value="{{ $supplier->supplier_code }}">{{ $supplier->supplier_code }} - {{ $supplier->supplier_name }}</option>
                                     @endforeach
                                 </select>
+                                <input class="form-control" type="hidden" id="supplier_name" name="supplier_name" required>
                             </div>
                             <br>
                             <div class="row">
@@ -128,6 +129,25 @@
     $('.supplier_code').select2({
           allowClear: true,
           placeholder: 'Choose Supplier',
+    });
+    
+    $(document).on("change", "#supplier_code", function(e){
+        e.preventDefault();
+        var supplier_code = $(this).val();
+        if (supplier_code) {
+            $.ajax({
+                url: '/controlcard/fetchsupplier/'+supplier_code,
+                type: "GET",
+                dataType: "json",
+                success:function(data) {
+                    $.each(data, function(key, value) {
+                        $('#supplier_name').val(value.supplier_name);
+                    });
+                }
+            });
+        } else{
+            $('#supplier_name').value = "";
+        }
     });
 </script>
 </html>
