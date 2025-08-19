@@ -16,11 +16,13 @@ class ControlCardController extends Controller
         if ($request->void) {
             $controlcards = ControlCard::select('*')
                 ->leftJoin('control_services', 'control_services.control_id', '=', 'control_card.control_category')
+                ->leftJoin('inventoryqr', 'control_card.assets_number', '=', 'inventoryqr.assets_number')
                 ->where('control_card.void', '=', $request->void)
                 ->get();
         } else {
             $controlcards = ControlCard::select('*')
                 ->leftJoin('control_services', 'control_services.control_id', '=', 'control_card.control_category')
+                ->leftJoin('inventoryqr', 'control_card.assets_number', '=', 'inventoryqr.assets_number')
                 ->where('control_card.void', '=', 'false')
                 ->get();
         }

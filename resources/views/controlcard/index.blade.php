@@ -43,6 +43,7 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Assets Number</th>
+                                        <th>Item Name</th>
                                         <th>Category</th>
                                         <th>Supplier</th>
                                         <th>Date</th>
@@ -55,6 +56,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $controlcard->assets_number }}</td>
+                                        <td>{{ $controlcard->item_name }}</td>
                                         <td>{{ $controlcard->control_name }}</td>
                                         <td>{{ $controlcard->supplier_name }}</td>
                                         <td>{{ $controlcard->control_date }}</td>
