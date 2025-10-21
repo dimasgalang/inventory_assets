@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AccessoriesQRController;
 use App\Http\Controllers\ControlCardController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\FabricQRController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InventoryQRController;
 use App\Http\Controllers\ITControlController;
@@ -11,6 +13,7 @@ use App\Http\Controllers\MachineQRController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SmartITController;
+use App\Http\Controllers\SupplierQRController;
 use App\Http\Controllers\UserController;
 use App\Models\InventoryQR;
 use Illuminate\Support\Facades\Route;
@@ -29,11 +32,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [LoginController::class, 'login'])->name('/');
 
 Route::group(['middleware' => 'guest'], function () {
-    Route::get('/register', [RegisterController::class, 'index'])->name('register');
+    // Route::get('/register', [RegisterController::class, 'index'])->name('register');
     Route::post('/register/guest', [RegisterController::class, 'store'])->name('register.guest');
 
     Route::get('/login', [LoginController::class, 'login'])->name('login');
-    Route::post('/login', [LoginController::class, 'authenticate'])->name('login');
+    Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
 });
 
 Route::group(['middleware' => 'auth'], function () {
@@ -116,10 +119,32 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/itmaintenance/import', [ITMaintenanceController::class, 'import'])->name('itmaintenance.import');
     Route::get('/itmaintenance/fetchassetscomputer', [ITMaintenanceController::class, 'fetchassetscomputer'])->name('itmaintenance.fetchassetscomputer');
 
+    //Fabrics QR
+    Route::get('/fabricqr/index', [FabricQRController::class, 'index'])->name('fabricqr.index');
+    Route::get('/fabricqr/create', [FabricQRController::class, 'create'])->name('fabricqr.create');
+    Route::post('/fabricqr/store', [FabricQRController::class, 'store'])->name('fabricqr.store');
+    Route::get('/fabricqr/void', [FabricQRController::class, 'void'])->name('fabricqr.void');
+    Route::get('/fabricqr/restore', [FabricQRController::class, 'restore'])->name('fabricqr.restore');
+    Route::get('/fabricqr/batchqr', [FabricQRController::class, 'batchqr'])->name('fabricqr.batchqr');
+    Route::get('/fabricqr/generateqr/{id}', [FabricQRController::class, 'generateqr'])->name('fabricqr.generateqr');
+    Route::post('/fabricqr/import', [FabricQRController::class, 'importFabric'])->name('fabricqr.import');
+    Route::get('/pdf/generatePDF', [FabricQRController::class, 'generatePDF'])->name('pdf.generatePDF');
+
+    //Accessories QR
+    Route::get('/accessoriesqr/index', [AccessoriesQRController::class, 'index'])->name('accessoriesqr.index');
+    Route::get('/accessoriesqr/create', [AccessoriesQRController::class, 'create'])->name('accessoriesqr.create');
+    Route::post('/accessoriesqr/store', [AccessoriesQRController::class, 'store'])->name('accessoriesqr.store');
+    Route::get('/accessoriesqr/void', [AccessoriesQRController::class, 'void'])->name('accessoriesqr.void');
+    Route::get('/accessoriesqr/restore', [AccessoriesQRController::class, 'restore'])->name('accessoriesqr.restore');
+    Route::get('/accessoriesqr/batchqr', [AccessoriesQRController::class, 'batchqr'])->name('accessoriesqr.batchqr');
+    Route::get('/accessoriesqr/generateqr/{id}', [AccessoriesQRController::class, 'generateqr'])->name('accessoriesqr.generateqr');
+    Route::post('/accessoriesqr/import', [AccessoriesQRController::class, 'importAccessories'])->name('accessoriesqr.import');
+    Route::get('/pdf/generatePDF', [AccessoriesQRController::class, 'generatePDF'])->name('pdf.generatePDF');
+
     //SmartIT
     Route::get('/smartit/fetchitem', [SmartITController::class, 'fetchitem'])->name('smartit.fetchitem');
     Route::get('/smartit/getitem/{barang_code}', [SmartITController::class, 'getitem'])->name('smartit.getitem');
 
     //PDF
-    Route::get('/pdf/generatePDF', [InventoryQRController::class, 'generatePDF'])->name('pdf.generatePDF');
+    // Route::get('/pdf/generatePDF', [InventoryQRController::class, 'generatePDF'])->name('pdf.generatePDF');
 });

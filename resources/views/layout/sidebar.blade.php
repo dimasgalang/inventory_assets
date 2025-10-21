@@ -106,6 +106,20 @@
         </div>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMES"
+            aria-expanded="true" aria-controls="collapseMES">
+            <i class="fas fa-fw fa-qrcode"></i>
+            <span>MES QR</span>
+        </a>
+        <div id="collapseMES" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('fabricqr.index') }}">Daftar Fabric QR</a>
+                <a class="collapse-item" href="{{ route('accessoriesqr.index') }}">Daftar Accessories QR</a>
+            </div>
+        </div>
+    </li>
+
     <!-- <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMachine"
             aria-expanded="true" aria-controls="collapseMachine">
