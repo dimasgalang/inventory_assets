@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Imports\InventoryQRImport;
 use App\Models\InventoryQR;
+use App\Models\SysLog;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Jenssegers\Agent\Agent;
 use Maatwebsite\Excel\Facades\Excel;
 use RealRashid\SweetAlert\Facades\Alert;
 use SimpleSoftwareIO\QrCode\Facades\QrCode as FacadesQrCode;
@@ -38,6 +41,22 @@ class InventoryQRController extends Controller
             'void' => 'false'
         ]);
 
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Create Inventory QR ' . $request->item_number . ' - ' . $request->item_name,
+            'menu' => 'Inventory QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
         Alert::success('Create Successfully!', 'Inventory QR ' . $request->item_number . ' successfully created!');
         return redirect()
             ->route('inventoryqr.create');
@@ -51,6 +70,22 @@ class InventoryQRController extends Controller
         ]);
         $inventoryqrs->save();
 
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Void Inventory QR ' . $inventoryqrs->item_number . ' - ' . $inventoryqrs->item_name,
+            'menu' => 'Inventory QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
         Alert::success('Void Successfully!', 'Inventory QR "' . $inventoryqrs->item_name . '" successfully voided!');
         return redirect('inventoryqr/index');
     }
@@ -62,6 +97,22 @@ class InventoryQRController extends Controller
             'void' => 'false',
         ]);
         $inventoryqrs->save();
+
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Restore Inventory QR ' . $inventoryqrs->item_number . ' - ' . $inventoryqrs->item_name,
+            'menu' => 'Inventory QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
 
         Alert::success('Restore Successfully!', 'Inventory QR "' . $inventoryqrs->item_name . '" successfully restored!');
         return redirect('inventoryqr/index');
@@ -124,6 +175,23 @@ class InventoryQRController extends Controller
 
             $updateinventoryqr->save();
         }
+
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Batch Generate QR Codes Inventory',
+            'menu' => 'Inventory QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
         Alert::success('Batch Successfully!', 'QR Code successfully generated!');
         return redirect('/inventoryqr/index');
     }
@@ -141,9 +209,39 @@ class InventoryQRController extends Controller
         Storage::delete($path);
 
         if ($import) {
+            $username = Auth::user()->name;
+            $agent = new Agent();
+            $agent->setUserAgent(request()->userAgent());
+            $ipAddress = request()->ip();
+            $browser = $agent->browser();
+            $os = $agent->platform();
+            SysLog::create([
+                'username' => $username,
+                'activity' => 'Import Inventory QR from Excel ' . $nama_file . 'succcessfully',
+                'menu' => 'Inventory QR',
+                'log_date' => now(),
+                'ip_address' => $ipAddress,
+                'browser_type' => $browser,
+                'os' => $os,
+            ]);
             Alert::success('Import Successfully!', 'Inventory data successfully imported!');
             return redirect()->intended('inventoryqr/index')->with(['success' => 'Data Berhasil Diimport!']);
         } else {
+            $username = Auth::user()->name;
+            $agent = new Agent();
+            $agent->setUserAgent(request()->userAgent());
+            $ipAddress = request()->ip();
+            $browser = $agent->browser();
+            $os = $agent->platform();
+            SysLog::create([
+                'username' => $username,
+                'activity' => 'Import Inventory QR from Excel ' . $nama_file . ' failed',
+                'menu' => 'Inventory QR',
+                'log_date' => now(),
+                'ip_address' => $ipAddress,
+                'browser_type' => $browser,
+                'os' => $os,
+            ]);
             return redirect()->intended('inventoryqr/index')->with(['error' => 'Data Gagal Diimport!']);
         }
     }
@@ -204,6 +302,24 @@ class InventoryQRController extends Controller
 
         $updateinventoryqr->save();
 
+
+        // Generate QR Code per data
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Generate QR Code Inventory ' . $inventoryqr->item_number . ' - ' . $inventoryqr->item_name,
+            'menu' => 'Inventory QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
         Alert::success('Generate QR Successfully!', 'QR Code successfully generated!');
         return redirect('/inventoryqr/index');
     }
@@ -223,6 +339,22 @@ class InventoryQRController extends Controller
         $data = ['title' => $document];
         $pdf = Pdf::loadView('/pdf/qrstickerA4', compact('data', 'qrcodes'));
         // return view('pdf.qrstickerA4', compact('data', 'qrcodes'));
+
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Generate PDF QR Codes Sticker ' . $document,
+            'menu' => 'Inventory QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
         return $pdf->download($document);
     }
 }

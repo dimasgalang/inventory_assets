@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Imports\MachineQRImport;
 use App\Models\MachineQR;
+use App\Models\SysLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Jenssegers\Agent\Agent;
 use Maatwebsite\Excel\Facades\Excel;
 use RealRashid\SweetAlert\Facades\Alert;
 use SimpleSoftwareIO\QrCode\Facades\QrCode as FacadesQrCode;
@@ -42,6 +45,22 @@ class MachineQRController extends Controller
             'void' => 'false'
         ]);
 
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Create Machine QR ' . $request->customs_code,
+            'menu' => 'Machine QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
         Alert::success('Create Successfully!', 'Machine QR ' . $request->customs_code . ' successfully created!');
         return redirect()
             ->route('machineqr.create');
@@ -68,6 +87,22 @@ class MachineQRController extends Controller
         ]);
 
         $machineqrs->save();
+
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Update Machine QR ' . $request->customs_code,
+            'menu' => 'Machine QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
         Alert::success('Update Successfully!', 'Machine QR ' . $request->customs_code . ' successfully updated!');
         return redirect()
             ->route('machineqr.index');
@@ -81,6 +116,22 @@ class MachineQRController extends Controller
         ]);
         $machineqrs->save();
 
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Void Machine QR ' . $machineqrs->customs_code,
+            'menu' => 'Machine QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
         Alert::success('Void Successfully!', 'Machine QR "' . $machineqrs->machine_name . '" successfully voided!');
         return redirect('machineqr/index');
     }
@@ -92,6 +143,22 @@ class MachineQRController extends Controller
             'void' => 'false',
         ]);
         $machineqrs->save();
+
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Restore Machine QR ' . $machineqrs->customs_code,
+            'menu' => 'Machine QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
 
         Alert::success('Restore Successfully!', 'Machine QR "' . $machineqrs->machine_name . '" successfully restored!');
         return redirect('machineqr/index');
@@ -149,6 +216,23 @@ class MachineQRController extends Controller
 
             $updatemachineqr->save();
         }
+
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Batch Generate Machine QR',
+            'menu' => 'Machine QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
         Alert::success('Batch Successfully!', 'QR Code successfully generated!');
         return redirect('/machineqr/index');
     }
@@ -169,6 +253,22 @@ class MachineQRController extends Controller
 
         $machineqr->save();
 
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Generate Machine QR ' . $machineqr->customs_code,
+            'menu' => 'Machine QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
         Alert::success('Generate QR Successfully!', 'QR Code successfully generated!');
         return redirect('/machineqr/index');
     }
@@ -186,9 +286,40 @@ class MachineQRController extends Controller
         Storage::delete($path);
 
         if ($import) {
+            $username = Auth::user()->name;
+            $agent = new Agent();
+            $agent->setUserAgent(request()->userAgent());
+            $ipAddress = request()->ip();
+            $browser = $agent->browser();
+            $os = $agent->platform();
+            SysLog::create([
+                'username' => $username,
+                'activity' => 'Import Machine QR from Excel' . $nama_file,
+                'menu' => 'Machine QR',
+                'log_date' => now(),
+                'ip_address' => $ipAddress,
+                'browser_type' => $browser,
+                'os' => $os,
+            ]);
+
             Alert::success('Import Successfully!', 'Machine data successfully imported!');
             return redirect()->intended('machineqr/index')->with(['success' => 'Data Berhasil Diimport!']);
         } else {
+            $username = Auth::user()->name;
+            $agent = new Agent();
+            $agent->setUserAgent(request()->userAgent());
+            $ipAddress = request()->ip();
+            $browser = $agent->browser();
+            $os = $agent->platform();
+            SysLog::create([
+                'username' => $username,
+                'activity' => 'Failed Import Machine QR from Excel' . $nama_file,
+                'menu' => 'Machine QR',
+                'log_date' => now(),
+                'ip_address' => $ipAddress,
+                'browser_type' => $browser,
+                'os' => $os,
+            ]);
             return redirect()->intended('machineqr/index')->with(['error' => 'Data Gagal Diimport!']);
         }
     }

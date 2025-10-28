@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class SysLog extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'username',
+        'activity',
+        'menu',
+        'log_date',
+        'ip_address',
+        'browser_type',
+        'os',
+    ];
+}

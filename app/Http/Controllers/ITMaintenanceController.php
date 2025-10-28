@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\InventoryQR;
 use App\Models\ITMaintenance;
+use App\Models\SysLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Jenssegers\Agent\Agent;
 use Maatwebsite\Excel\Facades\Excel;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -51,6 +54,22 @@ class ITMaintenanceController extends Controller
         ]);
         $itmaintenances->save();
 
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Void IT Maintenance ' . $itmaintenances->assets_number,
+            'menu' => 'IT Maintenance',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
         Alert::success('Void Successfully!', 'Inventory QR "' . $itmaintenances->assets_number . '" successfully voided!');
         return redirect('itmaintenance/index');
     }
@@ -62,6 +81,22 @@ class ITMaintenanceController extends Controller
             'void' => 'false',
         ]);
         $itmaintenances->save();
+
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Restore IT Maintenance ' . $itmaintenances->assets_number,
+            'menu' => 'IT Maintenance',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
 
         Alert::success('Restore Successfully!', 'Inventory QR "' . $itmaintenances->assets_number . '" successfully restored!');
         return redirect('itmaintenance/index');

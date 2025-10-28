@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Models\SysLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Jenssegers\Agent\Agent;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class DocumentController extends Controller
@@ -33,6 +36,22 @@ class DocumentController extends Controller
         ]);
         $documents->save();
 
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Void Document ' . $documents->document_name,
+            'menu' => 'Document',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
         Alert::success('Void Successfully!', 'Document "' . $documents->document_name . '" successfully voided!');
         return redirect('document/index');
     }
@@ -44,6 +63,22 @@ class DocumentController extends Controller
             'void' => 'false',
         ]);
         $documents->save();
+
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Restore Document ' . $documents->document_name,
+            'menu' => 'Document',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
 
         Alert::success('Restore Successfully!', 'Document "' . $documents->document_name . '" successfully restored!');
         return redirect('document/index');

@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Imports\ITControlImport;
 use App\Models\ITControl;
+use App\Models\SysLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Jenssegers\Agent\Agent;
 use Maatwebsite\Excel\Facades\Excel;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -41,6 +44,22 @@ class ITControlController extends Controller
             'void' => 'false'
         ]);
 
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Create IT Control ' . $request->assets_number,
+            'menu' => 'IT Control',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
         Alert::success('Create Successfully!', 'IT Control ' . $request->assets_number . ' successfully created!');
         return redirect()
             ->route('itcontrol.create');
@@ -54,6 +73,22 @@ class ITControlController extends Controller
         ]);
         $itcontrols->save();
 
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Void IT Control ' . $itcontrols->assets_number,
+            'menu' => 'IT Control',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
         Alert::success('Void Successfully!', 'IT Control "' . $itcontrols->assets_number . '" successfully voided!');
         return redirect('itcontrol/index');
     }
@@ -65,6 +100,22 @@ class ITControlController extends Controller
             'void' => 'false',
         ]);
         $itcontrols->save();
+
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Restore IT Control ' . $itcontrols->assets_number,
+            'menu' => 'IT Control',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
 
         Alert::success('Restore Successfully!', 'IT Control "' . $itcontrols->assets_number . '" successfully restored!');
         return redirect('itcontrol/index');
@@ -83,9 +134,41 @@ class ITControlController extends Controller
         Storage::delete($path);
 
         if ($import) {
+            $username = Auth::user()->name;
+            $agent = new Agent();
+            $agent->setUserAgent(request()->userAgent());
+            $ipAddress = request()->ip();
+            $browser = $agent->browser();
+            $os = $agent->platform();
+            SysLog::create([
+                'username' => $username,
+                'activity' => 'Import IT Control Data from Excel' . $nama_file,
+                'menu' => 'IT Control',
+                'log_date' => now(),
+                'ip_address' => $ipAddress,
+                'browser_type' => $browser,
+                'os' => $os,
+            ]);
+            
             Alert::success('Import Successfully!', 'IT Control data successfully imported!');
             return redirect()->intended('itcontrol/index')->with(['success' => 'Data Berhasil Diimport!']);
         } else {
+            $username = Auth::user()->name;
+            $agent = new Agent();
+            $agent->setUserAgent(request()->userAgent());
+            $ipAddress = request()->ip();
+            $browser = $agent->browser();
+            $os = $agent->platform();
+            SysLog::create([
+                'username' => $username,
+                'activity' => 'Failed Import IT Control Data from Excel' . $nama_file,
+                'menu' => 'IT Control',
+                'log_date' => now(),
+                'ip_address' => $ipAddress,
+                'browser_type' => $browser,
+                'os' => $os,
+            ]);
+            
             return redirect()->intended('itcontrol/index')->with(['error' => 'Data Gagal Diimport!']);
         }
     }

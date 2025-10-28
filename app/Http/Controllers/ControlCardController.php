@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\ControlCard;
 use App\Models\ControlServices;
 use App\Models\InventoryQR;
+use App\Models\SysLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Jenssegers\Agent\Agent;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class ControlCardController extends Controller
@@ -50,6 +53,22 @@ class ControlCardController extends Controller
             'void' => 'false'
         ]);
 
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Create Control Card ' . $request->assets_number,
+            'menu' => 'Control Card',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
         Alert::success('Create Successfully!', 'Control Card ' . $request->assets_number . ' successfully created!');
         return redirect()
             ->route('controlcard.create');
@@ -63,6 +82,22 @@ class ControlCardController extends Controller
         ]);
         $controlcards->save();
 
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Void Control Card ' . $controlcards->assets_number,
+            'menu' => 'Control Card',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
         Alert::success('Void Successfully!', 'Control Card "' . $controlcards->assets_number . '" successfully voided!');
         return redirect('controlcard/index');
     }
@@ -74,6 +109,22 @@ class ControlCardController extends Controller
             'void' => 'false',
         ]);
         $controlcards->save();
+
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Restore Control Card ' . $controlcards->assets_number,
+            'menu' => 'Control Card',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
 
         Alert::success('Restore Successfully!', 'Control Card "' . $controlcards->assets_number . '" successfully restored!');
         return redirect('controlcard/index');

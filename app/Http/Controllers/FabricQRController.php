@@ -6,10 +6,13 @@ use App\Imports\FabricsQRImport;
 use App\Imports\InventoryQRImport;
 use App\Models\FabricsQR;
 use App\Models\InventoryQR;
+use App\Models\SysLog;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Jenssegers\Agent\Agent;
 use Maatwebsite\Excel\Facades\Excel;
 use RealRashid\SweetAlert\Facades\Alert;
 use SimpleSoftwareIO\QrCode\Facades\QrCode as FacadesQrCode;
@@ -127,6 +130,23 @@ class FabricQRController extends Controller
 
             $updatefabricqr->save();
         }
+
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Batch Generate Fabric QR Codes',
+            'menu' => 'Fabric QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+        
         Alert::success('Batch Successfully!', 'QR Code successfully generated!');
         return redirect('/fabricqr/index');
     }
@@ -144,9 +164,39 @@ class FabricQRController extends Controller
         Storage::delete($path);
 
         if ($import) {
+            $username = Auth::user()->name;
+            $agent = new Agent();
+            $agent->setUserAgent(request()->userAgent());
+            $ipAddress = request()->ip();
+            $browser = $agent->browser();
+            $os = $agent->platform();
+            SysLog::create([
+                'username' => $username,
+                'activity' => 'Import Fabrics Data from Excel ' . $nama_file,
+                'menu' => 'Fabric QR',
+                'log_date' => now(),
+                'ip_address' => $ipAddress,
+                'browser_type' => $browser,
+                'os' => $os,
+            ]);
             Alert::success('Import Successfully!', 'Fabrics data successfully imported!');
             return redirect()->intended('fabricqr/index')->with(['success' => 'Data Berhasil Diimport!']);
         } else {
+            $username = Auth::user()->name;
+            $agent = new Agent();
+            $agent->setUserAgent(request()->userAgent());
+            $ipAddress = request()->ip();
+            $browser = $agent->browser();
+            $os = $agent->platform();
+            SysLog::create([
+                'username' => $username,
+                'activity' => 'Failed Import Fabrics Data from Excel ' . $nama_file,
+                'menu' => 'Fabric QR',
+                'log_date' => now(),
+                'ip_address' => $ipAddress,
+                'browser_type' => $browser,
+                'os' => $os,
+            ]);
             return redirect()->intended('fabricqr/index')->with(['error' => 'Data Gagal Diimport!']);
         }
     }
@@ -226,6 +276,24 @@ class FabricQRController extends Controller
         $data = ['title' => $document];
         $pdf = Pdf::loadView('/pdf/qrfabricsA4', compact('data', 'qrcodes'));
         // return view('pdf.qrstickerA4', compact('data', 'qrcodes'));
+
+        // logging activity
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Generate Fabric QR Codes PDF',
+            'menu' => 'Fabric QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
         return $pdf->download($document);
     }
 }
