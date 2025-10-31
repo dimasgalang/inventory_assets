@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('menu')->nullable();
             $table->dateTime('log_date')->nullable();
             $table->string('ip_address')->nullable();
+            $table->string('mac_address')->nullable();
             $table->string('browser_type')->nullable();
             $table->string('os')->nullable();
             $table->timestamps();

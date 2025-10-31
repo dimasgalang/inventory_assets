@@ -14,6 +14,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SmartITController;
 use App\Http\Controllers\SupplierQRController;
+use App\Http\Controllers\SysLogController;
 use App\Http\Controllers\UserController;
 use App\Models\InventoryQR;
 use Illuminate\Support\Facades\Route;
@@ -140,6 +141,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/accessoriesqr/generateqr/{id}', [AccessoriesQRController::class, 'generateqr'])->name('accessoriesqr.generateqr');
     Route::post('/accessoriesqr/import', [AccessoriesQRController::class, 'importAccessories'])->name('accessoriesqr.import');
     Route::get('/pdf/generatePDF', [AccessoriesQRController::class, 'generatePDF'])->name('pdf.generatePDF');
+
+    Route::get('/syslog/index', [SysLogController::class, 'index'])->name('syslog.index');
 
     //SmartIT
     Route::get('/smartit/fetchitem', [SmartITController::class, 'fetchitem'])->name('smartit.fetchitem');

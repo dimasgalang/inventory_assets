@@ -137,6 +137,7 @@ class AccessoriesQRController extends Controller
         $agent = new Agent();
         $agent->setUserAgent(request()->userAgent());
         $ipAddress = request()->ip();
+        $macAddress = get_mac_address($ipAddress);
         $browser = $agent->browser();
         $os = $agent->platform();
         SysLog::create([
@@ -145,6 +146,7 @@ class AccessoriesQRController extends Controller
             'menu' => 'Accessories QR',
             'log_date' => now(),
             'ip_address' => $ipAddress,
+            'mac_address' => $macAddress,
             'browser_type' => $browser,
             'os' => $os,
         ]);
@@ -169,6 +171,7 @@ class AccessoriesQRController extends Controller
             $agent = new Agent();
             $agent->setUserAgent(request()->userAgent());
             $ipAddress = request()->ip();
+            $macAddress = get_mac_address($ipAddress);
             $browser = $agent->browser();
             $os = $agent->platform();
             SysLog::create([
@@ -177,6 +180,7 @@ class AccessoriesQRController extends Controller
                 'menu' => 'Accessories QR',
                 'log_date' => now(),
                 'ip_address' => $ipAddress,
+                'mac_address' => $macAddress,
                 'browser_type' => $browser,
                 'os' => $os,
             ]);
@@ -187,6 +191,7 @@ class AccessoriesQRController extends Controller
             $agent = new Agent();
             $agent->setUserAgent(request()->userAgent());
             $ipAddress = request()->ip();
+            $macAddress = get_mac_address($ipAddress);
             $browser = $agent->browser();
             $os = $agent->platform();
             SysLog::create([
@@ -195,6 +200,7 @@ class AccessoriesQRController extends Controller
                 'menu' => 'Accessories QR',
                 'log_date' => now(),
                 'ip_address' => $ipAddress,
+                'mac_address' => $macAddress,
                 'browser_type' => $browser,
                 'os' => $os,
             ]);
@@ -282,6 +288,7 @@ class AccessoriesQRController extends Controller
         $agent = new Agent();
         $agent->setUserAgent(request()->userAgent());
         $ipAddress = request()->ip();
+        $macAddress = get_mac_address($ipAddress);
         $browser = $agent->browser();
         $os = $agent->platform();
         SysLog::create([
@@ -290,6 +297,7 @@ class AccessoriesQRController extends Controller
             'menu' => 'Accessories QR',
             'log_date' => now(),
             'ip_address' => $ipAddress,
+            'mac_address' => $macAddress,
             'browser_type' => $browser,
             'os' => $os,
         ]);

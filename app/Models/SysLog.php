@@ -15,6 +15,7 @@ class SysLog extends Model
         'menu',
         'log_date',
         'ip_address',
+        'mac_address',
         'browser_type',
         'os',
     ];

@@ -57,6 +57,7 @@ class ControlCardController extends Controller
         $agent = new Agent();
         $agent->setUserAgent(request()->userAgent());
         $ipAddress = request()->ip();
+        $macAddress = get_mac_address($ipAddress);
         $browser = $agent->browser();
         $os = $agent->platform();
         SysLog::create([
@@ -65,6 +66,7 @@ class ControlCardController extends Controller
             'menu' => 'Control Card',
             'log_date' => now(),
             'ip_address' => $ipAddress,
+            'mac_address' => $macAddress,
             'browser_type' => $browser,
             'os' => $os,
         ]);
@@ -86,6 +88,7 @@ class ControlCardController extends Controller
         $agent = new Agent();
         $agent->setUserAgent(request()->userAgent());
         $ipAddress = request()->ip();
+        $macAddress = get_mac_address($ipAddress);
         $browser = $agent->browser();
         $os = $agent->platform();
         SysLog::create([
@@ -94,6 +97,7 @@ class ControlCardController extends Controller
             'menu' => 'Control Card',
             'log_date' => now(),
             'ip_address' => $ipAddress,
+            'mac_address' => $macAddress,
             'browser_type' => $browser,
             'os' => $os,
         ]);
@@ -114,6 +118,7 @@ class ControlCardController extends Controller
         $agent = new Agent();
         $agent->setUserAgent(request()->userAgent());
         $ipAddress = request()->ip();
+        $macAddress = get_mac_address($ipAddress);
         $browser = $agent->browser();
         $os = $agent->platform();
         SysLog::create([
@@ -122,6 +127,7 @@ class ControlCardController extends Controller
             'menu' => 'Control Card',
             'log_date' => now(),
             'ip_address' => $ipAddress,
+            'mac_address' => $macAddress,
             'browser_type' => $browser,
             'os' => $os,
         ]);
