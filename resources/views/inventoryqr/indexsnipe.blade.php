@@ -17,20 +17,27 @@
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Control Card List</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Inventory QR List</h1>
                     <div>
-                        <a href="{{ route('controlcard.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                            class="fas fa-plus fa-sm text-white-50"></i> Create Control Card</a>
-                            
+                        <form method="GET" action="{{ route('inventoryqr.batchqrsnipe') }}" >
+                            <!-- <button id="submit" type="submit" class="btn btn-sm btn-primary shadow-s"><i
+                            class="fas fa-qrcode fa-sm text-white-50"></i> Generate QR</a></button> -->
+                        <!-- <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#importModal"><i
+                            class="fas fa-upload fa-sm text-white-50"></i> Upload Data</a> -->
+                        <!-- <a href="{{ route('inventoryqr.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                            class="fas fa-plus fa-sm text-white-50"></i> Create Inventory</a> -->
+                        <!-- <a href="{{ route('pdf.generatePDF') }}" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
+                            class="fas fa-download fa-sm text-white-50"></i> Download Sticker</a> -->
                         <a href="" data-toggle="modal" data-target="#stickerModal" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                            class="fas fa-download fa-sm text-white-50"></i> Download Control Card</a>
+                            class="fas fa-download fa-sm text-white-50"></i> Download Sticker</a>
+                        </form>
                     </div>
                 </div>
                 
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 d-sm-flex align-items-center justify-content-between mb-4">
-                        <h6 class="m-0 font-weight-bold text-primary">Control Card Data</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Inventory QR Data</h6>
                         <form method="GET" id="form-void">
                                 <select name="void" id="void" class="form-control" onchange="document.getElementById('form-void').submit()" style="width: 300px;">
                                     <option disabled selected hidden>Select Status</option>
@@ -47,34 +54,16 @@
                                         <th>ID</th>
                                         <th>Assets Number</th>
                                         <th>Item Name</th>
-                                        <th>Category</th>
-                                        <th>Supplier</th>
-                                        <th>Date</th>
-                                        <th>Price</th>
-                                        <th>Action</th>
+                                        <th>Assigned To</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($controlcards as $controlcard)
+                                    @foreach($inventoryqrs as $inventoryqr)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $controlcard->assets_number }}</td>
-                                        <td>{{ $controlcard->item_name }} ({{ $controlcard->location }})</td>
-                                        <td>{{ $controlcard->control_name }}</td>
-                                        <td>{{ $controlcard->supplier_name }}</td>
-                                        <td>{{ $controlcard->control_date }}</td>
-                                        <td>{{ $controlcard->control_price }}</td>
-                                        <td class="text-center">
-                                            @if (request()->get('void') == 'false' || request()->get('void') == '')
-                                            <a class="btn btn-danger btn-circle btn-sm btn-void-record" data-void-link="{{ route('controlcard.void', ['id' => $controlcard->id]) }}" data-void-name="{{ $controlcard->item_name }}" data-toggle="modal" data-target="#voidModal">
-                                                <i class="fas fa-ban"></i>
-                                            </a>
-                                            @elseif (request()->get('void') == 'true')
-                                            <a class="btn btn-success btn-circle btn-sm btn-restore-record" data-restore-link="{{ route('controlcard.restore', ['id' => $controlcard->id]) }}" data-restore-name="{{ $controlcard->item_name }}" data-toggle="modal" data-target="#restoreModal">
-                                                <i class="fas fa-history"></i>
-                                            </a>
-                                            @endif
-                                        </td>
+                                        <td>{{ $inventoryqr->id }}</td>
+                                        <td>{{ $inventoryqr->asset_tag }}</td>
+                                        <td>{{ $inventoryqr->name }}</td>
+                                        <td>{{ $inventoryqr->display_name }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -91,17 +80,19 @@
         <!-- End of Main Content -->
 
         <!-- Modal -->
-         <div class="modal fade" id="stickerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+
+        <div class="modal fade" id="stickerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-md" role="inventoryqr" >
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 id="sticker-title" class="modal-title" id="exampleModalLabel">Export Control Card</h5>
+                        <h5 id="sticker-title" class="modal-title" id="exampleModalLabel">Export Sticker</h5>
                         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">x</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form method="GET" action="{{ route('pdf.generateControlCardPDF') }}">
+                        <form method="GET" action="{{ route('pdf.generatePDFSnipe') }}">
                             @csrf
                             <div>
                                 <label>Export Type :</label>
@@ -114,20 +105,20 @@
                             <br>
                             <div>
                                 <label>From :</label>
-                                <select class="form-control" id="from_assets_number" name="from_assets_number" required>
+                                <select class="form-control" id="from_asset_tag" name="from_asset_tag" required>
                                     <option></option>
-                                    @foreach ($itemcontrols as $itemcontrol )
-                                        <option value="{{ $itemcontrol->assets_number }}">{{ $itemcontrol->assets_number }} - {{ $itemcontrol->item_name }} ({{ $itemcontrol->location }})</option>
+                                    @foreach ($inventoryqrs as $inventoryqr )
+                                        <option value="{{ $inventoryqr->asset_tag }}">{{ $inventoryqr->asset_tag }} - {{ $inventoryqr->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <br>
                             <div>
                                 <label>To :</label>
-                                <select class="form-control" id="to_assets_number" name="to_assets_number" required>
+                                <select class="form-control" id="to_asset_tag" name="to_asset_tag" required>
                                     <option></option>
-                                    @foreach ($itemcontrols as $itemcontrol )
-                                        <option value="{{ $itemcontrol->assets_number }}">{{ $itemcontrol->assets_number }} - {{ $itemcontrol->item_name }} ({{ $itemcontrol->location }})</option>
+                                    @foreach ($inventoryqrs as $inventoryqr )
+                                        <option value="{{ $inventoryqr->asset_tag }}">{{ $inventoryqr->asset_tag }} - {{ $inventoryqr->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -143,10 +134,10 @@
         </div>
 
         <div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl" role="controlcard" >
+            <div class="modal-dialog modal-xl" role="inventoryqr" >
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 id="pdf-title" class="modal-title" id="exampleModalLabel">Control Card Name</h5>
+                        <h5 id="pdf-title" class="modal-title" id="exampleModalLabel">Inventory QR Name</h5>
                         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
@@ -159,7 +150,7 @@
             </div>
         </div>
         <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-md" role="controlcard" >
+            <div class="modal-dialog modal-md" role="inventoryqr" >
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 id="delete-title" class="modal-title" id="exampleModalLabel">Delete Record</h5>
@@ -177,7 +168,7 @@
         </div>
 
         <div class="modal fade" id="voidModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-md" role="controlcard" >
+            <div class="modal-dialog modal-md" role="inventoryqr" >
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 id="void-title" class="modal-title" id="exampleModalLabel">Void Record</h5>
@@ -195,7 +186,7 @@
         </div>
 
         <div class="modal fade" id="restoreModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-md" role="controlcard" >
+            <div class="modal-dialog modal-md" role="inventoryqr" >
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 id="restore-title" class="modal-title" id="exampleModalLabel">Restore Record</h5>
@@ -221,7 +212,7 @@
                             <span aria-hidden="true">x</span>
                         </button>
                     </div>
-                    <form action="{{ route('controlcard.import') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('inventoryqr.import') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                             <div class="modal-body">
                                 <div class="form-group">
@@ -250,27 +241,38 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript">
     $('.btn-show-pdf').on('click', function () {
-        $('#pdf-src').attr('src', '../../storage/controlcard/' + $(this).data('show-link'));
+        $('#pdf-src').attr('src', '../../storage/inventoryqr/' + $(this).data('show-link'));
         $("#pdf-title").text($(this).data('show-title'));
     });
     $('.btn-delete-record').on('click', function () {
             $('#btn-confirm').attr('href', $(this).data('delete-link'));
-            $("#modal-text-record").text('Apakah anda yakin ingin menghapus Control Card ' + $(this).data('delete-name') + '?');
+            $("#modal-text-record").text('Apakah anda yakin ingin menghapus Inventory QR ' + $(this).data('delete-name') + '?');
     });
     $('.btn-void-record').on('click', function () {
             $('#btn-confirm-void').attr('href', $(this).data('void-link'));
-            $("#modal-text-record-void").text('Apakah anda yakin ingin menghapus Control Card ' + $(this).data('void-name') + '?');
+            $("#modal-text-record-void").text('Apakah anda yakin ingin menghapus Inventory QR ' + $(this).data('void-name') + '?');
     });
     $('.btn-restore-record').on('click', function () {
             $('#btn-confirm-restore').attr('href', $(this).data('restore-link'));
-            $("#modal-text-record-restore").text('Apakah anda yakin ingin mengembalikan Control Card ' + $(this).data('restore-name') + '?');
+            $("#modal-text-record-restore").text('Apakah anda yakin ingin mengembalikan Inventory QR ' + $(this).data('restore-name') + '?');
     });
-    $('#from_assets_number').select2({
+    $("#submit").click(function() {
+        $(this).hide();
+        Swal.fire({
+            title: "Process",
+            html: "Generating All QR Code.. Please Wait!!",
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+            },
+        })
+    });
+    $('#from_asset_tag').select2({
           allowClear: true,
           placeholder: 'Choose Assets Number',
           dropdownParent: $("#stickerModal")
     });
-    $('#to_assets_number').select2({
+    $('#to_asset_tag').select2({
           allowClear: true,
           placeholder: 'Choose Assets Number',
           dropdownParent: $("#stickerModal")
@@ -283,17 +285,17 @@
         e.preventDefault();
         var type = $(this).val();
         if (type == "range") {
-            $('#from_assets_number').removeAttr('disabled');
-            $('#to_assets_number').removeAttr('disabled');
-            $('#from_assets_number').required = true;
-            $('#to_assets_number').required = true;
+            $('#from_asset_tag').removeAttr('disabled');
+            $('#to_asset_tag').removeAttr('disabled');
+            $('#from_asset_tag').required = true;
+            $('#to_asset_tag').required = true;
         } else{
-            $('#from_assets_number').val('').trigger('change');
-            $('#to_assets_number').val('').trigger('change');
-            $('#from_assets_number').attr('disabled','disabled');
-            $('#to_assets_number').attr('disabled','disabled');
-            $('#from_assets_number').required = false;
-            $('#to_assets_number').required = false;
+            $('#from_asset_tag').val('').trigger('change');
+            $('#to_asset_tag').val('').trigger('change');
+            $('#from_asset_tag').attr('disabled','disabled');
+            $('#to_asset_tag').attr('disabled','disabled');
+            $('#from_asset_tag').required = false;
+            $('#to_asset_tag').required = false;
         }
     });
 </script>

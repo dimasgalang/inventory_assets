@@ -93,6 +93,21 @@ return [
             'trust_server_certificate' => true
         ],
 
+        'snipeit' => [
+            'driver' => 'mysql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_SNIPEIT_HOST', 'localhost'),
+            'port' => env('DB_SNIPEIT_PORT', '3306'),
+            'database' => env('DB_SNIPEIT_DATABASE', 'forge'),
+            'username' => env('DB_SNIPEIT_USERNAME', 'forge'),
+            'password' => env('DB_SNIPEIT_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'encrypt' => 'yes',
+            'trust_server_certificate' => true
+        ],
+
         'sqlsrvdocstore' => [
             'driver' => 'sqlsrv',
             'url' => env('DATABASE_URL'),

@@ -102,6 +102,7 @@
         <div id="collapseInventory" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="{{ route('inventoryqr.index') }}">Daftar Inventory QR</a>
+                <a class="collapse-item" href="{{ route('inventoryqr.indexSnipe') }}">QR Snipe IT</a>
             </div>
         </div>
     </li>

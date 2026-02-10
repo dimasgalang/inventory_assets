@@ -12,8 +12,12 @@
         body { 
             margin-bottom: -100px;
             /* size: 6in 4in;  */
-            width: 4in;
-            height: 3in;
+            width: 7in;
+            height: 9.25in;
+        }
+        @page {
+            size: 7in 9.25in;
+            margin: 27mm 16mm 27mm 16mm;
         }
     </style>
 </head>

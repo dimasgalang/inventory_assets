@@ -73,13 +73,16 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Inventory QR
     Route::get('/inventoryqr/index', [InventoryQRController::class, 'index'])->name('inventoryqr.index');
+    Route::get('/inventoryqr/indexSnipe', [InventoryQRController::class, 'indexSnipe'])->name('inventoryqr.indexSnipe');
     Route::get('/inventoryqr/create', [InventoryQRController::class, 'create'])->name('inventoryqr.create');
     Route::post('/inventoryqr/store', [InventoryQRController::class, 'store'])->name('inventoryqr.store');
     Route::get('/inventoryqr/void', [InventoryQRController::class, 'void'])->name('inventoryqr.void');
     Route::get('/inventoryqr/restore', [InventoryQRController::class, 'restore'])->name('inventoryqr.restore');
     Route::get('/inventoryqr/batchqr', [InventoryQRController::class, 'batchqr'])->name('inventoryqr.batchqr');
+    Route::get('/inventoryqr/batchqrsnipe', [InventoryQRController::class, 'batchqrsnipe'])->name('inventoryqr.batchqrsnipe');
     Route::get('/inventoryqr/generateqr/{id}', [InventoryQRController::class, 'generateqr'])->name('inventoryqr.generateqr');
     Route::post('/inventoryqr/import', [InventoryQRController::class, 'import'])->name('inventoryqr.import');
+    Route::get('/pdf/generatePDFSnipe', [InventoryQRController::class, 'generatePDFSnipe'])->name('pdf.generatePDFSnipe');
 
     //Machine QR
     Route::get('/machineqr/index', [MachineQRController::class, 'index'])->name('machineqr.index');
@@ -102,6 +105,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/controlcard/import', [ControlCardController::class, 'import'])->name('controlcard.import');
     Route::get('/controlcard/scan', [ControlCardController::class, 'scan'])->name('controlcard.scan');
     Route::get('/controlcard/fetchsupplier/{supplier_id}', [ControlCardController::class, 'fetchsupplier'])->name('controlcard.fetchsupplier');
+    Route::get('/pdf/generateControlCardPDF', [ControlCardController::class, 'generateControlCardPDF'])->name('pdf.generateControlCardPDF');
 
     //IT Control
     Route::get('/itcontrol/index', [ITControlController::class, 'index'])->name('itcontrol.index');

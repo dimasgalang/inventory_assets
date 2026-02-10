@@ -24,7 +24,19 @@ class InventoryQRController extends Controller
         } else {
             $inventoryqrs = InventoryQR::select('*')->where('void', '=', 'false')->get();
         }
+        // dd($inventoryqrs);
         return view('inventoryqr.index', compact('inventoryqrs'));
+    }
+
+    public function indexSnipe(Request $request)
+    {
+        if ($request->void) {
+            $inventoryqrs = DB::connection('snipeit')->table('assets')->leftJoin('users','assets.assigned_to','=','users.id')->get();
+        } else {
+            $inventoryqrs = DB::connection('snipeit')->table('assets')->leftJoin('users','assets.assigned_to','=','users.id')->get();
+        }
+        // dd($inventoryqrs);
+        return view('inventoryqr.indexsnipe', compact('inventoryqrs'));
     }
 
     public function create()
@@ -172,6 +184,86 @@ class InventoryQRController extends Controller
             // $qrImageName = $qr_data . '.png';
 
             Storage::put('public/inventoryqr/' . $fileImageName, $qr);
+
+            $updateinventoryqr = InventoryQR::findOrFail($inventoryqr->id);
+
+            $updateinventoryqr->fill([
+                'qr_code' => $fileImageName,
+            ]);
+
+            $updateinventoryqr->save();
+        }
+
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $macAddress = get_mac_address($ipAddress);
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Batch Generate QR Codes Inventory',
+            'menu' => 'Inventory QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'mac_address' => $macAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+
+        Alert::success('Batch Successfully!', 'QR Code successfully generated!');
+        return redirect('/inventoryqr/index');
+    }
+
+    public function batchqrsnipe()
+    {
+        $inventoryqrs = DB::connection('snipeit')->table('assets')->get();
+        foreach ($inventoryqrs as $inventoryqr) {
+            $qr_data = "http://192.168.1.243/hardware/" . $inventoryqr->id;
+
+            $fileImageName = $qr_data . '.jpg';
+
+            // Create image (base64) from some text
+            $string = $inventoryqr->asset_tag;
+            $width  = 200;
+            $height = 200;
+            $font   = 6;
+            $im = @imagecreate(
+                $width,
+                $height
+            );
+            $text_color = imagecolorallocate($im, 0, 0, 0); //black text
+            // white background
+            // $background_color = imagecolorallocate ($im, 255, 255, 255);
+            // transparent background
+            $transparent = imagecolorallocatealpha($im, 0, 0, 0, 127);
+            imagefill($im, 0, 0, $transparent);
+            imagesavealpha($im, true);
+            imagestring($im, $font, 75, 10, $string, $text_color);
+            ob_start();
+            imagepng($im);
+            $imstr = base64_encode(ob_get_clean());
+            imagedestroy($im);
+
+
+            // Save Image in folder from string base64
+            $img = 'data:image/png;base64,' . $imstr;
+            $image_parts = explode(";base64,", $img);
+            $image_type_aux = explode("image/", $image_parts[0]);
+            $image_type = $image_type_aux[1];
+            $image_base64 = base64_decode($image_parts[1]);
+            $file = 'public/inventoryqr/text/snipe/' . $qr_data . '.jpg';
+            // Move to folder
+            // file_put_contents($file, $image_base64);
+            Storage::put('public/inventoryqr/text/snipe/' . $fileImageName, $image_base64);
+
+            $qr = FacadesQrCode::format('png')->margin(12)->merge(storage_path('app/public/inventoryqr/text/snipe/') . $qr_data . '.jpg', 1, true)->size(200)->generate($qr_data);
+
+            // $qr = FacadesQrCode::format('png')->generate($qr_data);
+            // $qrImageName = $qr_data . '.png';
+
+            Storage::put('public/inventoryqr/snipe/' . $fileImageName, $qr);
 
             $updateinventoryqr = InventoryQR::findOrFail($inventoryqr->id);
 
@@ -372,5 +464,40 @@ class InventoryQRController extends Controller
             'os' => $os,
         ]);
         return $pdf->download($document);
+    }
+
+    public function generatePDFSnipe(Request $request)
+    {
+        $document = "All Assets QR Codes Sticker Snipe IT.pdf";
+        
+        if ($request->exporttype == "all") {
+            $qrcodes = DB::connection('snipeit')->table('assets')->get();
+            $document = "All Assets QR Codes Sticker Snipe IT.pdf";
+        } else {
+            $qrcodes = DB::connection('snipeit')->table('assets')->whereBetween('asset_tag', [$request->from_asset_tag, $request->to_asset_tag])->get();
+            $document = "Assets QR Codes Sticker Snipe IT (" . $request->from_asset_tag . " - " . $request->to_asset_tag . ").pdf";
+        }
+        $data = ['title' => $document];
+        $pdf = Pdf::loadView('/pdf/qrstickersnipe', compact('data', 'qrcodes'));
+        return view('pdf.qrstickersnipe', compact('data', 'qrcodes'));
+
+        $username = Auth::user()->name;
+        $agent = new Agent();
+        $agent->setUserAgent(request()->userAgent());
+        $ipAddress = request()->ip();
+        $macAddress = get_mac_address($ipAddress);
+        $browser = $agent->browser();
+        $os = $agent->platform();
+        SysLog::create([
+            'username' => $username,
+            'activity' => 'Generate PDF QR Codes Sticker ' . $document,
+            'menu' => 'Inventory QR',
+            'log_date' => now(),
+            'ip_address' => $ipAddress,
+            'mac_address' => $macAddress,
+            'browser_type' => $browser,
+            'os' => $os,
+        ]);
+        // return $pdf->download($document);
     }
 }
